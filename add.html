@@ -11,7 +11,9 @@
     <script>
         document.querySelector('form').addEventListener('submit', (event) => {
             event.preventDefault();
-            debugger;
+            
+            const { value } =  document.querySelector('input').value;
+            window.ipcRenderer.send('todo:add', value);
         });
     </script>
 </body>
