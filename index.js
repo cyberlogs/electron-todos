@@ -6,7 +6,11 @@ let mainWindow;
 let addWindow;
 
 app.on('ready', () => {
-    mainWindow = new BrowserWindow({});
+    mainWindow = new BrowserWindow({
+        webPreferences: {
+            preload: `${__dirname}/preload.js`
+        }
+    });
     mainWindow.loadURL(`file://${__dirname}/main.html`);
     mainWindow.on('closed', () => app.quit());
 
@@ -30,7 +34,8 @@ function createAddWindow() {
 
 ipcMain.on('todo:add', (event, todo) => {
     mainWindow.webContents.send('todo:add', todo);
-    addWindow.close();
+    addWindow.webContents.send('todo:add', todo);
+    //addWindow.close();
 });
 
 const menuTemplate = [
@@ -60,6 +65,7 @@ if (process.env.NODE_ENV !== 'production') {
     menuTemplate.push({
         label: 'View',
         submenu: [
+            { role: 'reload'},
             {
                 label: 'Toggle Developer Tools',
                 accelerator: process.platform === 'darwin' ? 'Command+Alt+I' : 'Ctrl+Shift+I',
